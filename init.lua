@@ -161,6 +161,8 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+vim.lsp.set_log_level("debug")
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
@@ -620,6 +622,7 @@ require('lazy').setup({
             },
           },
         },
+        kotlin_language_server = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -652,8 +655,7 @@ require('lazy').setup({
       }
     end,
   },
-
-  { -- Autoformat
+   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
     keys = {
@@ -667,17 +669,8 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
+      notify_on_error = true,
+      format_on_save = false,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -863,7 +856,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'kotlin' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -891,6 +884,18 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'kyazdani42/nvim-tree.lua',
+    requires = {
+      'kyazdani42/nvim-web-devicons', -- optional, for file icons
+    },
+    config = function()
+      require('nvim-web-devicons').setup()
+      require('nvim-tree').setup {}
+
+      vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+    end,
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -903,7 +908,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -938,3 +943,29 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+
+-- Navigate between splits using Ctrl-h, Ctrl-j, Ctrl-k, and Ctrl-l in normal mode
+vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+
+-- Navigate between splits using Ctrl-h, Ctrl-j, Ctrl-k, and Ctrl-l in terminal mode
+vim.api.nvim_set_keymap('t', '<C-h>', '<C-\\><C-n><C-w>h', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-j>', '<C-\\><C-n><C-w>j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-k>', '<C-\\><C-n><C-w>k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-l>', '<C-\\><C-n><C-w>l', { noremap = true, silent = true })
+
+-- Optional: Enable seamless navigation between tmux panes and vim splits
+if vim.fn.executable('tmux') == 1 then
+  vim.cmd([[
+    let &t_SI.="\ePtmux;\e\e[1 q\e\\"
+    let &t_EI.="\ePtmux;\e\e[0 q\e\\"
+  ]])
+  vim.api.nvim_set_keymap('n', '<C-h>', ':lua require"tmux".move_left()<CR>', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('n', '<C-j>', ':lua require"tmux".move_bottom()<CR>', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('n', '<C-k>', ':lua require"tmux".move_top()<CR>', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('n', '<C-l>', ':lua require"tmux".move_right()<CR>', { noremap = true, silent = true })
+end
+
