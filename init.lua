@@ -161,7 +161,7 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-vim.lsp.set_log_level("trace")
+vim.lsp.set_log_level 'trace'
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -169,7 +169,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.lsp.set_log_level("debug")
+vim.lsp.set_log_level 'debug'
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -194,8 +194,7 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-
-vim.g.gitblame_enabled = 1  -- Enable git blame by default
+vim.g.gitblame_enabled = 1 -- Enable git blame by default
 vim.g.gitblame_message_template = '<author> • <date> • <summary>'
 vim.g.gitblame_date_format = '%Y-%m-%d'
 
@@ -249,6 +248,14 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
   { 'f-person/git-blame.nvim' },
+  { 'christoomey/vim-tmux-navigator' },
+
+  {
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup {}
+    end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -288,21 +295,6 @@ require('lazy').setup({
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-      }
-      -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
     end,
   },
 
@@ -631,12 +623,12 @@ require('lazy').setup({
           },
         },
         kotlin_language_server = {
-          cmd = { "kotlin-language-server" },
-          root_dir = require("lspconfig").util.root_pattern("settings.gradle", "build.gradle", ".git"),
+          cmd = { 'kotlin-language-server' },
+          root_dir = require('lspconfig').util.root_pattern('settings.gradle', 'build.gradle', '.git'),
           settings = {
             kotlin = {
               import = {
-                strategy = "all",
+                strategy = 'all',
               },
             },
           },
@@ -673,7 +665,7 @@ require('lazy').setup({
       }
     end,
   },
-   { -- Autoformat
+  { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
     keys = {
@@ -926,7 +918,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -962,28 +954,16 @@ require 'kickstart.plugins.lint',
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
+-- Vim-Tmux-Navigator settings
+vim.g.tmux_navigator_no_mappings = 1
 
--- Navigate between splits using Ctrl-h, Ctrl-j, Ctrl-k, and Ctrl-l in normal mode
-vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+-- Remap split navigation keys
+vim.api.nvim_set_keymap('n', '<C-h>', ':TmuxNavigateLeft<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<C-j>', ':TmuxNavigateDown<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<C-k>', ':TmuxNavigateUp<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<C-l>', ':TmuxNavigateRight<CR>', { silent = true })
 
--- Navigate between splits using Ctrl-h, Ctrl-j, Ctrl-k, and Ctrl-l in terminal mode
-vim.api.nvim_set_keymap('t', '<C-h>', '<C-\\><C-n><C-w>h', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-j>', '<C-\\><C-n><C-w>j', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-k>', '<C-\\><C-n><C-w>k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-l>', '<C-\\><C-n><C-w>l', { noremap = true, silent = true })
-
--- Optional: Enable seamless navigation between tmux panes and vim splits
-if vim.fn.executable('tmux') == 1 then
-  vim.cmd([[
-    let &t_SI.="\ePtmux;\e\e[1 q\e\\"
-    let &t_EI.="\ePtmux;\e\e[0 q\e\\"
-  ]])
-  vim.api.nvim_set_keymap('n', '<C-h>', ':lua require"tmux".move_left()<CR>', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<C-j>', ':lua require"tmux".move_bottom()<CR>', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<C-k>', ':lua require"tmux".move_top()<CR>', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('n', '<C-l>', ':lua require"tmux".move_right()<CR>', { noremap = true, silent = true })
-end
-
+vim.api.nvim_set_keymap('t', '<C-h>', '<C-\\><C-n>:TmuxNavigateLeft<CR>', { silent = true })
+vim.api.nvim_set_keymap('t', '<C-j>', '<C-\\><C-n>:TmuxNavigateDown<CR>', { silent = true })
+vim.api.nvim_set_keymap('t', '<C-k>', '<C-\\><C-n>:TmuxNavigateUp<CR>', { silent = true })
+vim.api.nvim_set_keymap('t', '<C-l>', '<C-\\><C-n>:TmuxNavigateRight<CR>', { silent = true })
