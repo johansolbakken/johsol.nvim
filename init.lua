@@ -762,7 +762,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<TAB>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -969,3 +969,7 @@ vim.api.nvim_set_keymap('t', '<C-h>', '<C-\\><C-n>:TmuxNavigateLeft<CR>', { sile
 vim.api.nvim_set_keymap('t', '<C-j>', '<C-\\><C-n>:TmuxNavigateDown<CR>', { silent = true })
 vim.api.nvim_set_keymap('t', '<C-k>', '<C-\\><C-n>:TmuxNavigateUp<CR>', { silent = true })
 vim.api.nvim_set_keymap('t', '<C-l>', '<C-\\><C-n>:TmuxNavigateRight<CR>', { silent = true })
+
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
