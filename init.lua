@@ -895,6 +895,16 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+
+  {
+    'TimUntersberger/neogit',
+    config = function()
+      require('neogit').setup{}
+
+      vim.api.nvim_set_keymap('n', '<leader>ng', ':Neogit<CR>', { noremap = true, silent = true })
+    end
+  },
+
   {
     'kyazdani42/nvim-tree.lua',
     requires = {
@@ -972,3 +982,4 @@ vim.api.nvim_set_keymap('t', '<C-l>', '<C-\\><C-n>:TmuxNavigateRight<CR>', { sil
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
+
