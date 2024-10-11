@@ -624,17 +624,6 @@ require('lazy').setup({
             },
           },
         },
-        kotlin_language_server = {
-          cmd = { 'kotlin-language-server' },
-          root_dir = require('lspconfig').util.root_pattern('settings.gradle', 'build.gradle', '.git'),
-          settings = {
-            kotlin = {
-              import = {
-                strategy = 'all',
-              },
-            },
-          },
-        },
       }
 
       -- Ensure the servers and tools above are installed
