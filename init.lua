@@ -823,6 +823,36 @@ require('lazy').setup({
 
   },
 
+
+
+{
+  'slugbyte/lackluster.nvim',
+  priority = 1001, -- Last fargeskjemaet tidlig
+  config = function()
+    -- Sett fargeskjemaet til 'lackluster'
+    vim.cmd.colorscheme 'lackluster'
+
+    -- Ekstra tilpasning for høydepunkter
+    vim.cmd.hi 'Comment gui=none' -- Fjern kursiv for kommentarer
+
+    -- Tilleggskonfigurasjon hvis nødvendig
+    -- Du kan legge til flere highlight-justeringer her hvis ønsket
+  end,
+},
+
+
+{
+  'alljokecake/naysayer-theme.nvim',
+  priority = 900, -- Last fargeskjemaet før andre plugins
+  config = function()
+    -- Sett fargeskjemaet til 'naysayer'
+    vim.cmd.colorscheme 'naysayer'
+
+    -- Tilpass høydepunkter hvis ønsket
+    vim.cmd.hi 'Comment gui=none' -- Fjern kursiv på kommentarer
+  end,
+},
+
   { "catppuccin/nvim", name = "catppuccin", priority = 1000, init = function()
       vim.cmd.colorscheme 'catppuccin'
   end},
@@ -866,6 +896,11 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
+{
+  'rluba/jai.vim',
+  ft = 'jai',  -- loads only when a Jai file is opened
+},
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
